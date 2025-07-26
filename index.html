@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KMA Links</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
+    <link rel="icon" href="https://uploadkon.ir/uploads/bf1625_25Screenshot-2024-03-04-150309.png">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', sans-serif;
+            color: #fff;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #000000, #0a1a2a);
+            position: relative;
+        }
+        #particleCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.8;
+        }
+        .header {
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            transition: transform 0.3s ease;
+        }
+        .header.hidden {
+            transform: translateY(-100%);
+        }
+        .logo {
+            font-size: 1.5em;
+            font-weight: bold;
+            text-transform: uppercase;
+            background: #00c4cc;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: shadowBlink 1.5s ease-in-out infinite;
+            display: flex;
+            align-items: center;
+        }
+        .logo img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+            box-shadow: 0 0 10px #00c4cc;
+        }
+        @keyframes shadowBlink {
+            0% { text-shadow: 0 0 10px turquoise; }
+            33% { text-shadow: 0 0 10px blue; }
+            66% { text-shadow: 0 0 10px white; }
+            100% { text-shadow: 0 0 10px turquoise; }
+        }
+        .nav {
+            display: flex;
+            align-items: center;
+        }
+        .nav a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 1em;
+            transition: color 0.3s ease;
+        }
+        .nav a:hover {
+            color: #00c4cc;
+        }
+        .discord-btn {
+            background-color: #00c4cc;
+            color: #fff;
+            padding: 8px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+        .discord-btn:hover {
+            background-color: #0099a3;
+        }
+        .menu-toggle {
+            display: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: #00c4cc;
+        }
+        .nav-menu {
+            display: flexbox;
+        }
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+            .nav-menu {
+                display: none;
+                position: absolute;
+                top: 60px;
+                right: 20px;
+                background-color: rgba(0, 0, 0, 0.9);
+                flex-direction: column;
+                padding: 10px;
+                border-radius: 5px;
+            }
+            .nav-menu.active {
+                display: flex;
+            }
+            .nav a {
+                margin: 10px 0;
+                display: block;
+            }
+            .header {
+                flex-direction: column;
+                padding: 10px;
+            }
+            .logo img {
+                width: 30px;
+                height: 30px;
+            }
+        }
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+        }
+        .link-frame {
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border: 2px solid #00c4cc;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 700px;
+            margin: 10px auto;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 0 20px #00c4cc;
+            animation: pulse 4s ease-in-out infinite;
+            transition: transform 0.3s ease;
+        }
+        .link-frame:hover {
+            transform: scale(1.03);
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 10px #00c4cc; }
+            50% { box-shadow: 0 0 30px #00c4cc; }
+            100% { box-shadow: 0 0 10px #00c4cc; }
+        }
+        .link-title {
+            font-size: 1.8em;
+            font-weight: bold;
+            margin: 0;
+            color: #00c4cc;
+            text-shadow: 0 0 8px #00c4cc;
+        }
+        .link-desc {
+            font-size: 1em;
+            margin: 10px 0;
+            color: #fff;
+        }
+        .link-btn {
+            background: linear-gradient(45deg, #00c4cc, #0077b6);
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .link-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px #00c4cc;
+        }
+        .sub-links {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            margin-top: 15px;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .sub-links.visible {
+            display: flex;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .sub-link {
+            background-color: rgba(0, 196, 204, 0.2);
+            color: #fff;
+            padding: 8px 15px;
+            margin: 5px 0;
+            border-radius: 5px;
+            text-decoration: none;
+            width: 80%;
+            max-width: 400px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .sub-link:hover {
+            background-color: rgba(0, 196, 204, 0.4);
+            transform: scale(1.03);
+        }
+        .footer {
+            background-color: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            text-align: center;
+            width: 100%;
+            margin-top: auto;
+        }
+        .footer p {
+            margin: 5px 0;
+            font-size: 0.9em;
+        }
+        .footer a {
+            color: #00c4cc;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        .amirkma-shadow {
+            text-shadow: 0 0 10px #00c4cc, 0 0 20px #00c4cc;
+            color: #fff;
+        }
+        .heart-blink {
+            animation: blink 1.5s ease-in-out infinite;
+        }
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        .audio-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+        .audio-controls button {
+            background-color: #00c4cc;
+            color: #fff;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 1.2em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .audio-controls button:hover {
+            background-color: #0099a3;
+        }
+        @media (max-width: 768px) {
+            .link-title {
+                font-size: 1.5em;
+            }
+            .link-desc {
+                font-size: 0.9em;
+            }
+            .link-btn {
+                padding: 8px 16px;
+            }
+            .link-frame {
+                width: 90%;
+                padding: 15px;
+                max-width: 600px;
+            }
+            .sub-link {
+                width: 90%;
+                padding: 6px 12px;
+                font-size: 0.9em;
+            }
+            .audio-controls {
+                right: 10px;
+                bottom: 10px;
+            }
+            .audio-controls button {
+                width: 35px;
+                height: 35px;
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="particleCanvas"></canvas>
+    <header class="header">
+        <div class="logo">
+            <img src="https://uploadkon.ir/uploads/bf1625_25Screenshot-2024-03-04-150309.png" alt="Logo Image">
+            KMA Tools
+        </div>
+        <div class="menu-toggle">☰</div>
+        <nav class="nav">
+            <div class="nav-menu">
+                <a href="#">Shop</a>
+                <a href="https://discord.com/invite/FMrCVEfhp3">Discord</a>
+                <a href="https://amirkma.github.io/webhook/">Webhook Msg</a>
+                <a href="https://kma-tools.pages.dev/" class="discord-btn">Home</a>
+            </div>
+        </nav>
+    </header>
+    <main class="main-content">
+        <div class="link-frame">
+            <h2 class="link-title">Hiddify</h2>
+            <p class="link-desc">Download Hiddify App</p>
+            <a href="#" class="link-btn">Download</a>
+            <div class="sub-links">
+                <a href="https://apps.apple.com/us/app/hiddify-proxy-vpn/id6596777532" class="sub-link">ios</a>
+                <a href="https://github.com/hiddify/hiddify-next/releases/download/v2.0.5/Hiddify-Android-universal.apk" class="sub-link">Android</a>
+                <a href="https://github.com/hiddify/hiddify-next/releases/download/v2.0.5/Hiddify-Windows-Portable-x64.zip" class="sub-link">Windows x64</a>
+            </div>
+        </div>
+        <div class="link-frame">
+            <h2 class="link-title">Clash Mi</h2>
+            <p class="link-desc">Download Clash Mi App</p>
+            <a href="#" class="link-btn">Download</a>
+            <div class="sub-links">
+                <a href="https://apps.apple.com/us/app/clash-mi/id6744321968" class="sub-link">ios</a>
+                <a href="https://github.com/KaringX/clashmi/releases/download/v1.0.6.105/clashmi_1.0.6.105_android_arm.apk" class="sub-link">Android</a>
+                <a href="https://github.com/KaringX/clashmi/releases/download/v1.0.6.105/clashmi_1.0.6.105_windows_x64.exe" class="sub-link">Windows x64</a>
+            </div>
+        </div>
+        <div class="link-frame">
+            <h2 class="link-title">V2ray N-NG</h2>
+            <p class="link-desc">Download V2ray N-NG App</p>
+            <a href="#" class="link-btn">Download</a>
+            <div class="sub-links">
+                <a href="https://apps.apple.com/us/app/v2box-v2ray-client/id6446814690" class="sub-link">ios</a>
+                <a href="https://github.com/2dust/v2rayNG/releases/download/1.10.8/v2rayNG_1.10.8_universal.apk" class="sub-link">android</a>
+                <a href="https://github.com/2dust/v2rayN/releases/download/7.12.7/v2rayN-windows-64.zip" class="sub-link">windows x64</a>
+            </div>
+        </div>
+        <div class="link-frame">
+            <h2 class="link-title">NekoRay</h2>
+            <p class="link-desc">Download NekoRay App</p>
+            <a href="#" class="link-btn">Download</a>
+            <div class="sub-links">
+                <a href="https://github.com/MatsuriDayo/nekoray/releases/download/4.0.1/nekoray-4.0.1-2024-12-12-windows64.zip" class="sub-link">windows x64</a>
+                <a href="https://github.com/MatsuriDayo/nekoray/releases/download/4.0.1/nekoray-4.0.1-2024-12-12-linux64.zip" class="sub-link">linux64</a>
+            </div>
+        </div>
+        <div class="link-frame">
+            <h2 class="link-title">Vpn Panel</h2>
+            <p class="link-desc">Get free Vpn config !</p>
+            <a href="#" class="link-btn">Get Config's</a>
+            <div class="sub-links">
+                <a href="https://itsyebekhe.github.io/PSG/" class="sub-link">PSG</a>
+            </div>
+        </div>
+        <div class="link-frame">
+            <h2 class="link-title">Telegram Proxy</h2>
+            <p class="link-desc">Get a Telegram Proxy !</p>
+            <a href="#" class="link-btn">Get Proxy's</a>
+            <div class="sub-links">
+                <a href="https://telegram-proxy-fetcher.pages.dev/" class="sub-link">Proxy Fetcher</a>
+            </div>
+        </div>
+        <div class="link-frame">
+            <h2 class="link-title">Coming Soon...</h2>
+            <p class="link-desc"></p>
+            <a href="#" class="link-btn">Coming soon...</a>
+            <div class="sub-links">
+            </div>
+        </div>
+    </main>
+    <footer class="footer">
+        <p>© 2025 KMA Links. All rights reserved.</p>
+        <p>Follow us: <a href="#">Instagram</a> | <a href="#">Github</a></p>
+        <p>Coded By <span class="amirkma-shadow">AMIR KMA</span> With Love <span class="heart-blink">❤️</span></p>
+    </footer>
+    <div class="audio-controls">
+        <button id="playBtn">🔇</button>
+        <button id="stopBtn">🔊</button>
+    </div>
+    <audio id="backgroundMusic" loop autoplay>
+        <source src="https://uploadkon.ir/uploads/22e225_25music1.mp3" type="audio/mp3">
+        Your browser does not support the audio element.
+    </audio>
+    <script>
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 1;
+                this.speedX = (Math.random() - 0.5) * 1;
+                this.speedY = (Math.random() - 0.5) * 1;
+                this.color = `hsl(${Math.random() * 180 + 180}, 70%, 50%)`;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x < 0 || this.x > canvas.width) this.speedX = -this.speedX;
+                if (this.y < 0 || this.y > canvas.height) this.speedY = -this.speedY;
+            }
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        const particlesArray = [];
+        const particleCount = 100;
+
+        for (let i = 0; i < particleCount; i++) {
+            particlesArray.push(new Particle());
+        }
+
+        function connectParticles() {
+            for (let a = 0; a < particlesArray.length; a++) {
+                for (let b = a; b < particlesArray.length; b++) {
+                    const dx = particlesArray[a].x - particlesArray[b].x;
+                    const dy = particlesArray[a].y - particlesArray[b].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    if (distance < 100) {
+                        ctx.strokeStyle = `rgba(0, 196, 204, ${1 - distance / 100})`;
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                        ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+                particlesArray[i].draw();
+            }
+            connectParticles();
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        let lastScrollTop = 0;
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('.header');
+            const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+
+            if (currentScroll > lastScrollTop && currentScroll > 50) {
+                header.classList.add('hidden');
+            } else {
+                header.classList.remove('hidden');
+            }
+            lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
+
+            const linkFrames = document.querySelectorAll('.link-frame');
+            const screenPosition = window.innerHeight / 1.3;
+
+            linkFrames.forEach(frame => {
+                const framePosition = frame.getBoundingClientRect().top;
+                if (framePosition < screenPosition) {
+                    frame.classList.add('visible');
+                }
+            });
+        });
+
+        window.addEventListener('load', () => {
+            const linkFrames = document.querySelectorAll('.link-frame');
+            linkFrames.forEach(frame => frame.classList.add('visible'));
+        });
+
+        const audio = document.getElementById('backgroundMusic');
+        const playBtn = document.getElementById('playBtn');
+        const stopBtn = document.getElementById('stopBtn');
+
+        audio.volume = 0.5;
+        audio.play().catch(error => {
+            console.log("Autoplay blocked by browser:", error);
+        });
+
+        playBtn.addEventListener('click', () => {
+            audio.play();
+            playBtn.style.display = 'none';
+            stopBtn.style.display = 'block';
+        });
+
+        stopBtn.addEventListener('click', () => {
+            audio.pause();
+            audio.currentTime = 0;
+            stopBtn.style.display = 'none';
+            playBtn.style.display = 'block';
+        });
+
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navMenu = document.querySelector('.nav-menu');
+
+        menuToggle.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+
+        // مدیریت کلیک روی دکمه‌های لینک برای نمایش/مخفی کردن لینک‌های فرعی
+        const linkButtons = document.querySelectorAll('.link-btn');
+        linkButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault(); // جلوگیری از رفتن به لینک اصلی
+                const parentFrame = button.closest('.link-frame');
+                const subLinks = parentFrame.querySelector('.sub-links');
+                const isVisible = subLinks.classList.contains('visible');
+
+                // بستن تمام لینک‌های فرعی باز
+                document.querySelectorAll('.sub-links').forEach(sl => {
+                    sl.classList.remove('visible');
+                });
+
+                // باز کردن لینک‌های فرعی مربوط به دکمه کلیک‌شده (اگر قبلاً باز نباشد)
+                if (!isVisible) {
+                    subLinks.classList.add('visible');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
